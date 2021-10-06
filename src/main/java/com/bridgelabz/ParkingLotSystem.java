@@ -1,18 +1,27 @@
 package com.bridgelabz;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParkingLotSystem {
-    private  int actualCapacity;
+    private int actualCapacity;
     private int currentCapacity;
     private Object vehicle;
-    private ParkingLotOwner owner;
+    private List<ParkingLotObserver> observers;
 
-    public ParkingLotSystem(int capacity){
+
+    public ParkingLotSystem(int capacity) {
+        this.observers = new ArrayList<>();
         this.currentCapacity = 0;
         this.actualCapacity = capacity;
     }
-    public boolean registerOwner(ParkingLotOwner owner) {
-        this.owner = owner;
-        return true;
+
+    public boolean registerParkingLotObserver(ParkingLotObserver observer) {
+        this.observers.add(observer);
+    }
+
+    public void registerSecurity(AirportSecurity airportSecurity) {
+        this.security = airportSecurity;
     }
 
     public void setCapacity(int capacity) {
@@ -20,8 +29,11 @@ public class ParkingLotSystem {
     }
 
     public void park(Object vehicle) throws ParkingLotException {
-        if (this.currentCapacity == this.actualCapacity){
-            owner.capacityIsFull();
+        if (this.currentCapacity == this.actualCapacity) {
+            for(ParkingLotObserver observer: observers){
+                observer.capacityIsFull();
+            }
+
             throw new ParkingLotException("Parking Lot is Full");
         }
         this.currentCapacity++;
@@ -47,5 +59,4 @@ public class ParkingLotSystem {
         }
         return false;
     }
-
 }
